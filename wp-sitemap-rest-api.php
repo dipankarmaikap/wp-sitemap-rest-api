@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name: WP Sitemap Rest Api
- * Description: Custom functions custom made for this site
+ * Description: Generating rest api sitemap for your headless wordpress site.
  * Version: 0.1.3
  * Author:      Dipankar Maikap
  * Author URI:  https://dipankarmaikap.com/
