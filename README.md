@@ -16,20 +16,18 @@ This plugin adds REST API end points for generating sitemap for your headless wo
 
 This plugin adds 4 end points to wp rest api
 
-### Get total number of posts, pages, tags and categories.
+### Get total number of posts, pages, authors, tags and categories.
 
 ```javascript
 
 import axios from "axios";
 
 export default async function getTotalCounts() {
-  const res = await axios({
-    url: `${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/sitemap/v1/totalpages`,
-    method: "get",
-  });
+  const res = await axios.get(
+    `${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/sitemap/v1/totalpages`
+  );
   return (await res?.data) ?? {};
 }
-
 
 ```
 
