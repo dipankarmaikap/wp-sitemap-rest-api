@@ -83,14 +83,26 @@ function wsra_generate_posts_api()
 }
 function wsra_generate_totalpages_api()
 {
-    $tempArray = [
-        'totalCategories' => count(get_categories()),
-        'totalTags' => count(get_tags()),
-        'totalPublishedPosts' => (int) wp_count_posts()->publish,
-        'totalPublishedPages' => (int)wp_count_posts('page')->publish,
-        'totalUsers' => (int)count_users()['total_users'],
+    $args = array(
+        'exclude_from_search' => false
+    );
+    $argsTwo = array(
+        'publicly_queryable' => true
+    );
+    $post_types = get_post_types($args, 'names');
+    $post_typesTwo = get_post_types($argsTwo, 'names');
+    $post_types = array_merge($post_types, $post_typesTwo);
+    unset($post_types['attachment']);
+    $defaultArray = [
+        'category' => count(get_categories()),
+        'tag' => count(get_tags()),
+        'user' => (int)count_users()['total_users'],
     ];
-    return $tempArray;
+    $tempValueHolder = array();
+    foreach ($post_types as $postType) {
+        $tempValueHolder[$postType] = (int)wp_count_posts($postType)->publish;
+    }
+    return array_merge($defaultArray, $tempValueHolder);
 }
 
 add_action('rest_api_init', function () {

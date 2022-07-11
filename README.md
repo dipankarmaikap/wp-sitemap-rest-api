@@ -1,4 +1,4 @@
-# WP Sitemap Rest Api Plugin
+# WP Sitemap Rest API Plugin
 
 This plugin adds REST API end points for generating sitemap for your headless wordpress site.
 
@@ -35,11 +35,12 @@ This will then give you a result as such:
 
 ```json
 {
-    "totalCategories": 1,
-    "totalTags": 0,
-    "totalPublishedPosts": 15,
-    "totalPublishedPages": 1,
-    "totalUsers": 1
+    "category": 1,
+    "tag": 0,
+    "post": 15,
+    "page": 1,
+    "user": 1,
+    "any_custom_post_type_you_have":0
 }
 ```
 ### Get author urls
@@ -138,6 +139,6 @@ This will give you a result like below:
 Contributions are welcome :). This was a very quick build.
 Feel free to make a PR against this repo!
 
-[Open an issue](https://github.com/dipankarmaikap/wp-graphql-image-dataurl/issues)
+[Open an issue](https://github.com/dipankarmaikap/wp-sitemap-rest-api/issues)
 
 [@maikap_dipankar](https://twitter.com/maikap_dipankar)
