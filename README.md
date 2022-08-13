@@ -16,6 +16,8 @@ This plugin adds REST API end points for generating sitemap for your headless wo
 
 This plugin adds 4 end points to wp rest api
 
+[Check out my blog post](https://dipankarmaikap.com/generating-sitemap-for-a-headless-wp-next-js-site/) on how you can use this plugin and nextjs to create dunamic sitemap.
+
 ### Get total number of posts, pages, authors, tags and categories.
 
 ```javascript
