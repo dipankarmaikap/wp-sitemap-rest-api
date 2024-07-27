@@ -13,20 +13,23 @@
 
 function wsra_get_user_inputs()
 {
-    $pageNo = sprintf("%d", $_GET['pageNo']);
-    $perPage = sprintf("%d", $_GET['perPage']);
-    $taxonomy =  $_GET['taxonomyType'];
-    $postType = $_GET['postType'];
+    $pageNo = isset($_GET['pageNo']) ? intval($_GET['pageNo']) : 1;
+    $perPage = isset($_GET['perPage']) ? intval($_GET['perPage']) : 100;
+    $taxonomy = isset($_GET['taxonomyType']) ? sanitize_text_field($_GET['taxonomyType']) : '';
+    $postType = isset($_GET['postType']) ? sanitize_text_field($_GET['postType']) : 'post';
+
     $paged = $pageNo ? $pageNo : 1;
     $perPage = $perPage ? $perPage : 100;
     $offset = ($paged - 1) * $perPage;
+
     $args = array(
         'number' => $perPage,
         'offset' => $offset,
     );
+
     $postArgs = array(
         'posts_per_page' => $perPage,
-        'post_type' => strval($postType ? $postType : 'post'),
+        'post_type' => $postType,
         'paged' => $paged,
     );
 
@@ -52,17 +55,29 @@ function wsra_generate_taxonomy_api()
 {
     [$args,, $taxonomy] = wsra_get_user_inputs();
     $taxonomy_urls = array();
-    $taxonomys = $taxonomy == 'tag' ? get_tags($args) : get_categories($args);
-    foreach ($taxonomys as $taxonomy) {
-        $fullUrl = esc_url(get_category_link($taxonomy->term_id));
-        $url = str_replace(home_url(), '', $fullUrl);
-        $tempArray = [
-            'url' => $url,
-        ];
-        array_push($taxonomy_urls, $tempArray);
+
+    // Fetch terms for the specified taxonomy
+    $terms = get_terms(array(
+        'taxonomy' => $taxonomy,
+        'hide_empty' => false,
+        'number' => $args['number'],
+        'offset' => $args['offset'],
+    ));
+
+    if (!is_wp_error($terms)) {
+        foreach ($terms as $term) {
+            $fullUrl = esc_url(get_term_link($term->term_id, $taxonomy));
+            $url = str_replace(home_url(), '', $fullUrl);
+            $tempArray = [
+                'url' => $url,
+            ];
+            array_push($taxonomy_urls, $tempArray);
+        }
     }
-    return array_merge($taxonomy_urls);
+
+    return $taxonomy_urls;
 }
+
 function wsra_generate_posts_api()
 {
     [, $postArgs] = wsra_get_user_inputs();
@@ -102,6 +117,18 @@ function wsra_generate_totalpages_api()
     foreach ($post_types as $postType) {
         $tempValueHolder[$postType] = (int)wp_count_posts($postType)->publish;
     }
+    // Fetch all custom taxonomies
+    $custom_taxonomies = get_taxonomies(['_builtin' => false], 'names');
+    foreach ($custom_taxonomies as $taxonomy) {
+        if (taxonomy_exists($taxonomy)) {
+            $terms = get_terms([
+                'taxonomy' => $taxonomy,
+                'hide_empty' => false,
+            ]);
+            $tempValueHolder[$taxonomy] = count($terms);
+        }
+    }
+
     return array_merge($defaultArray, $tempValueHolder);
 }
 
