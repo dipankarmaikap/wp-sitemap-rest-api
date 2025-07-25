@@ -13,10 +13,10 @@
 
 function wsra_get_user_inputs()
 {
-    $pageNo = sprintf("%d", $_GET['pageNo']);
-    $perPage = sprintf("%d", $_GET['perPage']);
-    $taxonomy =  $_GET['taxonomyType'];
-    $postType = $_GET['postType'];
+    $pageNo = sprintf("%d", isset($_GET['pageNo']) ? $_GET['pageNo'] : 1);
+    $perPage = sprintf("%d", isset($_GET['perPage']) ? $_GET['perPage'] : 10);
+    $taxonomy = isset($_GET['taxonomyType']) ? $_GET['taxonomyType'] : '';
+    $postType = isset($_GET['postType']) ? $_GET['postType'] : '';
     $paged = $pageNo ? $pageNo : 1;
     $perPage = $perPage ? $perPage : 100;
     $offset = ($paged - 1) * $perPage;
